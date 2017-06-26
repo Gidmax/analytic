@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @postcard.title %>
+</p>
+
+<p>
+  <strong>Desc:</strong>
+  <%= @postcard.desc %>
+</p>
+
+<p>
+  <strong>Ix:</strong>
+  <%= @postcard.ix %>
+</p>
+
+<p>
+  <strong>Src:</strong>
+  <%= @postcard.src %>
+</p>
+
+<%= link_to 'Edit', edit_postcard_path(@postcard) %> |
+<%= link_to 'Back', postcards_path %>

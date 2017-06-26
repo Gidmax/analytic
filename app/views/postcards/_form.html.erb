@@ -1,0 +1,37 @@
+<%= form_for(postcard) do |f| %>
+  <% if postcard.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(postcard.errors.count, "error") %> prohibited this postcard from being saved:</h2>
+
+      <ul>
+      <% postcard.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :title %>
+    <%= f.text_field :title %>
+  </div>
+
+  <div class="field">
+    <%= f.label :desc %>
+    <%= f.text_area :desc %>
+  </div>
+
+  <div class="field">
+    <%= f.label :ix %>
+    <%= f.text_field :ix %>
+  </div>
+
+  <div class="field">
+    <%= f.label :src %>
+    <%= f.text_area :src %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
