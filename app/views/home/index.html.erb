@@ -1,1 +1,63 @@
-hello
+<div class="" style="width: 50vw;margin: 80px auto 0;">
+  <h1 style="line-height:44px;">
+    [DEMO VERSION] <br>
+    Analytics Reporting API V4
+  </h1>
+
+  <% if user_signed_in? %>
+    <% view_id = Service.where(author: current_user[:email]).first[:account] %>
+    <span>Hello, <span style="text-transform:capitalize"><%= current_user[:name]%></span></span> |
+    <span><%= link_to('Logout', destroy_user_session_path, method: :delete) %></span>
+    <br><br>
+    <!-- The API response will be printed here. -->
+    <textarea cols="80" rows="20" id="query-output" style="width:100%; max-width:640px;"></textarea>
+
+    <!-- The Sign-in button. This will run `queryReports()` on success. -->
+    <p class="g-signin2" data-onsuccess="queryReports"></p>
+
+    <script>
+      // Replace with your view ID.
+      var VIEW_ID = "<%= view_id %>";
+
+      // Query the API and print the results to the page.
+      function queryReports() {
+        gapi.client.request({
+          path: '/v4/reports:batchGet',
+          root: 'https://analyticsreporting.googleapis.com/',
+          method: 'POST',
+          body: {
+            reportRequests: [
+              {
+                viewId: VIEW_ID,
+                dateRanges: [
+                  {
+                    startDate: '7daysAgo',
+                    endDate: 'today'
+                  }
+                ],
+                metrics: [
+                  {
+                    expression: 'ga:sessions'
+                  }
+                ]
+              }
+            ]
+          }
+        }).then(
+          displayResults,
+          console.error.bind(console)
+        );
+      }
+
+      function displayResults(response) {
+        // alert(JSON.stringify(response));
+        var formattedJson = JSON.stringify(response.result, null, 2);
+        document.getElementById('query-output').value = formattedJson;
+      }
+    </script>
+  <% else %>
+    <%= link_to('Login', new_user_session_path)  %> | <%= link_to('Register', new_user_registration_path)  %>
+    <br><br>
+    <p style="margin: 0;background: #9fda9f;padding: 20px;color: #209e93;">Please login before access "Analytic" data</p>
+  <% end %>
+</div>

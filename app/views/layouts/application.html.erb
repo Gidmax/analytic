@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Kept</title>
+    <title>Analytic</title>
     <%= csrf_meta_tags %>
-
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <meta charset="utf-8">
+    <meta name="google-signin-client_id" content="593935752050-jqkuklfcc1gu9jjk50fidouoj0tv51o0.apps.googleusercontent.com">
+    <meta name="google-signin-scope" content="https://www.googleapis.com/auth/analytics.readonly">
   </head>
 
   <body>
     <%= yield %>
+
+    <script src="https://apis.google.com/js/client:platform.js"></script>
   </body>
 </html>
