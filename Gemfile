@@ -42,6 +42,13 @@ gem 'google-api-client'
 # add devise login
 gem 'devise'
 
+# d3 chart integrate
+gem "d3-rails"
+
+# chartjs integration
+gem 'chart-js-rails'
+gem 'chartkick'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
