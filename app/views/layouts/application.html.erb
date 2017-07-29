@@ -1,18 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title>Analytic</title>
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="google-signin-client_id" content="593935752050-jqkuklfcc1gu9jjk50fidouoj0tv51o0.apps.googleusercontent.com">
     <meta name="google-signin-scope" content="https://www.googleapis.com/auth/analytics.readonly">
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1"/>
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Milestone">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Milestone">
+    <meta name="theme-color" content="#4C7FF0">
+
+    <!-- external stylesheets -->
+    <link rel="stylesheet" href="../vendor/bower-jvectormap/jquery-jvectormap-1.2.2.css"/>
+    <link rel="stylesheet" href="../vendor/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../vendor/pace/themes/blue/pace-theme-minimal.css"/>
+    <link rel="stylesheet" href="../vendor/font-awesome/css/font-awesome.css"/>
+    <link rel="stylesheet" href="../vendor/animate.css/animate.css"/>
+    <link rel="stylesheet" href="../styles/app.css" id="load_styles_before"/>
+    <link rel="stylesheet" href="../styles/app.skins.css"/>
   </head>
 
   <body>
     <%= yield %>
 
+    <!-- external script -->
     <script src="https://apis.google.com/js/client:platform.js"></script>
+    <script type="text/javascript">
+      window.paceOptions = {
+        document: true,
+        eventLag: true,
+        restartOnPushState: true,
+        restartOnRequestAfter: true,
+        ajax: {
+          trackMethods: [ 'POST','GET']
+        }
+      };
+    </script>
+
+    <!-- build:js({.tmp,app}) scripts/app.min.js -->
+    <script src="../vendor/jquery/dist/jquery.js"></script>
+    <script src="../vendor/pace/pace.js"></script>
+    <script src="../vendor/tether/dist/js/tether.js"></script>
+    <script src="../vendor/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="../vendor/fastclick/lib/fastclick.js"></script>
+    <script src="../scripts/constants.js"></script>
+    <script src="../scripts/main.js"></script>
+    <!-- endbuild -->
+
+    <!-- page scripts -->
+    <script src="../vendor/flot/jquery.flot.js"></script>
+    <script src="../vendor/flot/jquery.flot.resize.js"></script>
+    <script src="../vendor/flot/jquery.flot.stack.js"></script>
+    <script src="../vendor/flot-spline/js/jquery.flot.spline.js"></script>
+    <script src="../vendor/bower-jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="../data/maps/jquery-jvectormap-us-aea.js"></script>
+    <script src="../vendor/jquery.easy-pie-chart/dist/jquery.easypiechart.js"></script>
+    <script src="../vendor/noty/js/noty/packaged/jquery.noty.packaged.min.js"></script>
+    <script src="../scripts/helpers/noty-defaults.js"></script>
+    <!-- end page scripts -->
+
+    <!-- initialize page scripts -->
+    <script src="../scripts/dashboard/dashboard.js"></script>
+    <!-- end initialize page scripts -->
   </body>
 </html>

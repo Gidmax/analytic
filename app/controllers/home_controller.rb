@@ -4,4 +4,7 @@ class HomeController < ApplicationController
   def index
     @hello = "world"
   end
+
+  def test
+  end
 end
