@@ -28,9 +28,24 @@
     <link rel="stylesheet" href="../styles/app.css" id="load_styles_before"/>
     <link rel="stylesheet" href="../styles/app.skins.css"/>
   </head>
-
   <body>
-    <%= yield %>
+
+    <div class="app">
+      <!--sidebar panel-->
+      <div class="off-canvas-overlay" data-toggle="sidebar"></div>
+
+      <%= render 'layouts/partials/sidebar' %>
+
+      <!-- content panel -->
+      <div class="main-panel">
+        <%= render 'layouts/partials/topbar' %>
+        <!-- main area -->
+        <div class="main-content">
+          <%= yield %>
+        </div>
+        
+      </div>
+    </div>
 
     <!-- external script -->
     <script src="https://apis.google.com/js/client:platform.js"></script>

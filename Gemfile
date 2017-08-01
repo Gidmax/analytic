@@ -36,8 +36,9 @@ gem 'jbuilder', '~> 2.5'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
-# integrate ga
-gem 'google-api-client'
+# integrate google api
+gem 'google-api-client', :require => 'google/apis/analytics_v3'
+
 
 # add devise login
 gem 'devise'
