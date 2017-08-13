@@ -4,23 +4,23 @@ The Okno - Ultimate Multipurpose HTML5 Template
 
 File:           CSS Base
 Version:        1.1
-Last change:    10/06/15 
+Last change:    10/06/15
 Author:         Suelo
 
 Table of Contents:
 
 	1. Document Setup
 	2. Basic
-	3. Header 
+	3. Header
 	4. Content  5. Footer
-	6. Elements  7. Widgets 
-	8. Animations 
+	6. Elements  7. Widgets
+	8. Animations
 
 -------------------------------------------------------------------------------- */
 /* ----------------------------------------------------------------------------- */
 /* --- 1. SETUP
 /* ----------------------------------------------------------------------------- */
-body { position: relative; color: #434343; font-size: 13px; font-family: "Open Sans", Helvetica, Arial, sans-serif; font-weight: 400; line-height: 1.5; overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body { position: relative; color: #434343; font-size: 13px; font-family: "Chatthai","Open Sans", Helvetica, Arial, sans-serif"Chatthai", font-weight: 400; line-height: 1.5; overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
 a { color: inherit; -moz-transition: all 0.2s ease-in-out; -o-transition: all 0.2s ease-in-out; -webkit-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out; }
 
@@ -2429,13 +2429,13 @@ html[dir="rtl"] .pagination > li:first-child, html[dir="rtl"] .pagination > li:l
 .nav-panel > li > a { font-family: "Montserrat", Helvetica, Arial, sans-serif; font-weight: 500; text-transform: uppercase; font-size: 14px; filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60); opacity: 0.6; }
 .nav-panel > li > a:hover, .nav-panel > li > a:focus { background: transparent; filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false); opacity: 1; }
 
-/* Typography 
+/* Typography
 ----------------------------------------------------------*/
 /* Fonts */
 .font-secondary { font-family: "Montserrat", Helvetica, Arial, sans-serif; }
 
 /* Headings */
-h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 { margin-top: 0; display: block; font-family: "Open Sans", Helvetica, Arial, sans-serif; }
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 { margin-top: 0; display: block; font-family: "Chatthai","Open Sans", Helvetica, Arial, sans-serif; }
 h1.font-secondary, .h1.font-secondary, h2.font-secondary, .h2.font-secondary, h3.font-secondary, .h3.font-secondary, h4.font-secondary, .h4.font-secondary, h5.font-secondary, .h5.font-secondary, h6.font-secondary, .h6.font-secondary { font-weight: 400; }
 
 h1, .h1, h2, .h2, h3, .h3, h4, .h4 { font-weight: 100; }

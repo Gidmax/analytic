@@ -33,11 +33,27 @@
 
     <!-- CSS Styles -->
     <link rel="stylesheet" href="../assets/css/styles.css" />
+    <link rel="stylesheet" href="../assets/css/custom.css" />
 
     <!-- CSS Base -->
     <link id="theme" rel="stylesheet" href="../assets/css/themes/theme-bottle.css" />
   </head>
   <body>
+  <style type="text/css">
+    /* added Chatthai font*/
+    @font-face {
+      font-family: 'Chatthai';
+      src:url('../fonts/chatthai.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'ChatthaiUi';
+      src:url('../fonts/chatthaiui.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+  </style>
 
     <!-- Body content -->
     <%= yield %>

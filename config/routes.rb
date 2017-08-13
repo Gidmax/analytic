@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   get 'home/test'
   get 'home/index'
+  get 'landing/about'
 
   get 'landing/index'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

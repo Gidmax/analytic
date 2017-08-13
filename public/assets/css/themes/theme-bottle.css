@@ -20,7 +20,7 @@ Table of Contents:
 /* ----------------------------------------------------------------------------- */
 /* --- 1. SETUP
 /* ----------------------------------------------------------------------------- */
-body { position: relative; color: #434343; font-size: 13px; font-family: "Open Sans", Helvetica, Arial, sans-serif; font-weight: 400; line-height: 1.5; overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body { position: relative; color: #434343; font-size: 13px; font-family: "Chatthai","Open Sans", Helvetica, Arial, sans-serif !important; font-weight: 400; line-height: 1.5; overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
 a { color: inherit; -moz-transition: all 0.2s ease-in-out; -o-transition: all 0.2s ease-in-out; -webkit-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out; }
 
@@ -1806,7 +1806,7 @@ html[dir="rtl"] .panel-group .panel-2 .panel-body { padding: 18px 45px 18px 0; }
 
 /* Buttons
 ----------------------------------------------------------*/
-.btn { position: relative; font-family: "Montserrat", Helvetica, Arial, sans-serif; text-transform: uppercase; font-size: 11px; font-weight: 600; -moz-border-radius: 40px; -webkit-border-radius: 40px; border-radius: 40px; padding: 13px 28px 15px; border: none; color: inherit; -moz-transition: all 0.2s ease-out; -o-transition: all 0.2s ease-out; -webkit-transition: all 0.2s ease-out; transition: all 0.2s ease-out; outline: none; border: 2px solid; background: transparent; margin-bottom: 3px; }
+.btn { position: relative; font-family: "Chatthai","Montserrat", Helvetica, Arial, sans-serif; text-transform: uppercase; font-size: 11px; font-weight: 600; -moz-border-radius: 40px; -webkit-border-radius: 40px; border-radius: 40px; padding: 13px 28px 15px; border: none; color: inherit; -moz-transition: all 0.2s ease-out; -o-transition: all 0.2s ease-out; -webkit-transition: all 0.2s ease-out; transition: all 0.2s ease-out; outline: none; border: 2px solid; background: transparent; margin-bottom: 3px; }
 .btn i { font-size: 130%; display: inline-block; vertical-align: middle; }
 .btn.btn-xs { padding: 6px 20px 7px; }
 .btn.btn-sm { padding: 10px 24px 11px; }
@@ -2439,7 +2439,7 @@ html[dir="rtl"] .pagination > li:first-child, html[dir="rtl"] .pagination > li:l
 .font-secondary { font-family: "Montserrat", Helvetica, Arial, sans-serif; }
 
 /* Headings */
-h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 { margin-top: 0; display: block; font-family: "Open Sans", Helvetica, Arial, sans-serif; }
+h1, a, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 { margin-top: 0; display: block; font-family: "Chatthai","Open Sans", Helvetica, Arial, sans-serif; }
 h1.font-secondary, .h1.font-secondary, h2.font-secondary, .h2.font-secondary, h3.font-secondary, .h3.font-secondary, h4.font-secondary, .h4.font-secondary, h5.font-secondary, .h5.font-secondary, h6.font-secondary, .h6.font-secondary { font-weight: 400; }
 
 h1, .h1, h2, .h2, h3, .h3, h4, .h4 { font-weight: 100; }

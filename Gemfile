@@ -37,9 +37,10 @@ gem 'redis', '~> 3.2'
 # gem 'capistrano-rails', group: :development
 
 # integrate google api
-gem 'google-api-client', :require => 'google/apis/analytics_v3'
 gem 'googleauth'
+gem 'google-api-client', '~> 0.9'
 gem 'google-id-token', '~> 1.3'
+gem 'redis', '~> 3.2'
 gem 'dotenv'
 
 
