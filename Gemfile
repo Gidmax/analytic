@@ -40,7 +40,7 @@ gem 'redis', '~> 3.2'
 # integrate google api
 gem 'googleauth'
 gem 'google-api-client', '~> 0.9'
-gem 'google-id-token', '~> 1.3'
+gem 'google-id-token'
 gem 'redis', '~> 3.2'
 gem 'dotenv'
 
