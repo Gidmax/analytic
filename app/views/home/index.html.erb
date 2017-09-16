@@ -4,7 +4,6 @@
   </h1>
 
   <% if user_signed_in? %>
-    <% view_id = Service.where(author: current_user[:email]).first[:account] %>
     <span>Hello, <span style="text-transform:capitalize"><%= current_user[:name]%></span></span> |
     <span><%= link_to('Logout', destroy_user_session_path, method: :delete) %></span>
   <% end %>
