@@ -1,178 +1,38 @@
 <div class="" style="width: 50vw;margin: 80px auto 0;">
   <h1 style="line-height:44px;">
-    [DEMO VERSION] <br>
-    Analytics Reporting API V4
+    Analytics Reporting | DIKW
   </h1>
 
   <% if user_signed_in? %>
     <% view_id = Service.where(author: current_user[:email]).first[:account] %>
     <span>Hello, <span style="text-transform:capitalize"><%= current_user[:name]%></span></span> |
     <span><%= link_to('Logout', destroy_user_session_path, method: :delete) %></span>
-    <br><br>
-
-    <!-- The API response will be printed here. -->
-    <textarea cols="80" rows="20" id="query-output" style="width:100%; max-width:640px;"></textarea>
-
-    <!-- The Sign-in button. This will run `queryReports()` on success. -->
-    <p class="g-signin2" data-onsuccess="queryReports"></p>
-
-    <script>
-      // Replace with your view ID.
-      var VIEW_ID = "<%= view_id %>";
-
-      // Query the API and print the results to the page.
-      function queryReports() {
-        gapi.client.request({
-          path: '/v4/reports:batchGet',
-          root: 'https://analyticsreporting.googleapis.com/',
-          method: 'POST',
-          body: {
-            reportRequests: [
-              {
-                viewId: VIEW_ID,
-                dateRanges: [
-                  {
-                    startDate: '7daysAgo',
-                    endDate: 'today'
-                  }
-                ],
-                dimensions: ['ga:yearMonth'],
-                metrics: [
-                  { expression: 'ga:users' },
-                  { expression: 'ga:users' },
-                  { expression: 'ga:avgSessionDuration' },
-                  { expression: 'ga:pageviews' },
-                  { expression: 'ga:uniquePageviews' },
-                  { expression: 'ga:avgTimeOnPage' },
-                  { expression: 'ga:exitRate' }
-                ]
-              }
-            ]
-          }
-        }).then(
-          displayResults,
-          console.error.bind(console)
-        );
-      }
-
-      function displayResults(response) {
-        // alert(JSON.stringify(response));
-        var formattedJson = JSON.stringify(response.result, null, 2);
-        document.getElementById('query-output').value = formattedJson;
-      }
-    </script>
-  <% else %>
-    <%= link_to('Login', new_user_session_path)  %> | <%= link_to('Register', new_user_registration_path)  %>
-    <br><br>
-    <p style="margin: 0;background: #9fda9f;padding: 20px;color: #209e93;">Please login before access "Analytic" data</p>
-
-    <!-- ChartJS use canvas formatted -->
-    <canvas id="myChart" width="400" height="400"></canvas>
-
-    <!-- D3 use svg formatted -->
-    <svg width="960" height="960" font-family="sans-serif" font-size="10" text-anchor="middle"></svg>
-
-    <!-- chartjs configuration -->
-    <script>
-      var ctx = document.getElementById("myChart").getContext('2d');
-      var myChart = new Chart(ctx, {
-          type: 'bar',
-          data: {
-              labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-              datasets: [{
-                  label: '# of Votes',
-                  data: [12, 19, 3, 5, 2, 3],
-                  backgroundColor: [
-                      'rgba(255, 99, 132, 0.2)',
-                      'rgba(54, 162, 235, 0.2)',
-                      'rgba(255, 206, 86, 0.2)',
-                      'rgba(75, 192, 192, 0.2)',
-                      'rgba(153, 102, 255, 0.2)',
-                      'rgba(255, 159, 64, 0.2)'
-                  ],
-                  borderColor: [
-                      'rgba(255,99,132,1)',
-                      'rgba(54, 162, 235, 1)',
-                      'rgba(255, 206, 86, 1)',
-                      'rgba(75, 192, 192, 1)',
-                      'rgba(153, 102, 255, 1)',
-                      'rgba(255, 159, 64, 1)'
-                  ],
-                  borderWidth: 1
-              }]
-          },
-          options: {
-              scales: {
-                  yAxes: [{
-                      ticks: {
-                          beginAtZero:true
-                      }
-                  }]
-              }
-          }
-      });
-    </script>
-
-    <!-- D3 configuration -->
-    <script>
-      var svg = d3.select("svg"),
-          width = +svg.attr("width"),
-          height = +svg.attr("height");
-
-      var format = d3.format(",d");
-
-      var color = d3.scaleOrdinal(d3.schemeCategory20c);
-
-      var pack = d3.pack()
-          .size([width, height])
-          .padding(1.5);
-
-      d3.csv("flare.csv", function(d) {
-        d.value = +d.value;
-        if (d.value) return d;
-      }, function(error, classes) {
-        if (error) throw error;
-
-        var root = d3.hierarchy({children: classes})
-            .sum(function(d) { return d.value; })
-            .each(function(d) {
-              if (id = d.data.id) {
-                var id, i = id.lastIndexOf(".");
-                d.id = id;
-                d.package = id.slice(0, i);
-                d.class = id.slice(i + 1);
-              }
-            });
-
-        var node = svg.selectAll(".node")
-          .data(pack(root).leaves())
-          .enter().append("g")
-            .attr("class", "node")
-            .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-
-        node.append("circle")
-            .attr("id", function(d) { return d.id; })
-            .attr("r", function(d) { return d.r; })
-            .style("fill", function(d) { return color(d.package); });
-
-        node.append("clipPath")
-            .attr("id", function(d) { return "clip-" + d.id; })
-          .append("use")
-            .attr("xlink:href", function(d) { return "#" + d.id; });
-
-        node.append("text")
-            .attr("clip-path", function(d) { return "url(#clip-" + d.id + ")"; })
-          .selectAll("tspan")
-          .data(function(d) { return d.class.split(/(?=[A-Z][^A-Z])/g); })
-          .enter().append("tspan")
-            .attr("x", 0)
-            .attr("y", function(d, i, nodes) { return 13 + (i - nodes.length / 2 - 0.5) * 10; })
-            .text(function(d) { return d; });
-
-        node.append("title")
-            .text(function(d) { return d.id + "\n" + format(d.value); });
-      });
-
-    </script>
   <% end %>
+
+  <!-- add signin button -->
+  <div class="g-signin2" data-onsuccess="onSignIn"></div>
+  <!-- Action bar -->
+  <div id="menu" style="display:none">
+    <a href="<%= home_test_path %>">test api</a>
+  </div>
 </div>
+
+<!-- Script Loader -->
+<script>
+function onSignIn(googleUser) {
+  var id_token = googleUser.getAuthResponse().id_token;
+  $.ajax({
+    url: "<%= home_auth_storing_path %>?id=" + id_token ,
+    complete: function(xhr, textStatus) {
+      if (xhr.status == 200) {
+        // alert("Success connect to server");
+        // alert(xhr.responseText);
+        $("#rocket").attr('src', xhr.responseText);
+        $("#menu").show();
+      }else{
+        alert("Failed to connect to server | " + xhr.statusText);
+      }
+    }
+  });
+}
+</script>

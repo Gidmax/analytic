@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Code:</strong>
+  <%= @tracker.code %>
+</p>
+
+<p>
+  <strong>Desc:</strong>
+  <%= @tracker.desc %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @tracker.user_id %>
+</p>
+
+<p>
+  <strong>Count of access:</strong>
+  <%= @tracker.count_of_access %>
+</p>
+
+<%= link_to 'Edit', edit_tracker_path(@tracker) %> |
+<%= link_to 'Back', trackers_path %>

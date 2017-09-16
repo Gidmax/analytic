@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  code: MyString
+  desc: MyText
+  user_id: MyString
+  count_of_access: 1
+
+two:
+  code: MyString
+  desc: MyText
+  user_id: MyString
+  count_of_access: 1

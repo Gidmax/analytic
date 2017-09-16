@@ -1,0 +1,38 @@
+<%= form_for(tracker) do |f| %>
+  <% if tracker.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(tracker.errors.count, "error") %> prohibited this tracker from being saved:</h2>
+
+      <ul>
+      <% tracker.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :code %>
+    <%= f.text_field :code %>
+  </div>
+
+  <div class="field">
+    <%= f.label :desc %>
+    <%= f.text_area :desc %>
+  </div>
+
+  <div class="field">
+    <%= f.label :user_id %>
+    <!-- <%= f.text_field :user_id %> -->
+    <%= f.select 'user_id', options_for_select(User.all.collect{ |u| ["#{u.name}  |  #{u.email}", u.id] }) %>
+  </div>
+
+  <!-- <div class="field">
+    <%= f.label :count_of_access %>
+    <%= f.number_field :count_of_access %>
+  </div> -->
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

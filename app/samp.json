@@ -1,0 +1,51 @@
+{
+  "reports": [
+    {
+      "columnHeader": {
+        "metricHeader": {
+          "metricHeaderEntries": [
+            {
+              "name": "ga:sessions",
+              "type": "INTEGER"
+            }
+          ]
+        }
+      },
+      "data": {
+        "maximums": [
+          {
+            "values": [
+              "321"
+            ]
+          }
+        ],
+        "minimums": [
+          {
+            "values": [
+              "321"
+            ]
+          }
+        ],
+        "rowCount": 1,
+        "rows": [
+          {
+            "metrics": [
+              {
+                "values": [
+                  "321"
+                ]
+              }
+            ]
+          }
+        ],
+        "totals": [
+          {
+            "values": [
+              "321"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

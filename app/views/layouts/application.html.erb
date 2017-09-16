@@ -27,6 +27,10 @@
     <link rel="stylesheet" href="../vendor/animate.css/animate.css"/>
     <link rel="stylesheet" href="../styles/app.css" id="load_styles_before"/>
     <link rel="stylesheet" href="../styles/app.skins.css"/>
+
+    <!-- google platform lib -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="<%= @setting[:client_id].id rescue '' %>">
   </head>
   <body>
 

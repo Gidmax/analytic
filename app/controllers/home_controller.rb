@@ -3,54 +3,136 @@ class HomeController < ApplicationController
   require 'yaml'
   require 'googleauth'
   require 'googleauth/stores/redis_token_store'
-  require 'google/apis/analytics_v3'
   require 'google/apis/analyticsreporting_v4'
   require 'google-id-token'
   require 'dotenv'
+  require 'sinatra'
+  include Google::Apis::AnalyticsreportingV4
+  include Google::Auth
+
   before_action :authenticate_user!
 
+  LOGIN_URL = "/"
+
   def index
-    @hello = "world"
+    reporter = Google::Apis::AnalyticsreportingV4::AnalyticsReportingService.new
+  end
+
+  def mod
+    puts params[:title]
+    @mod = params[:title]
   end
 
   def test
-    #set_up variable
-    api_version = 'v3'
-    app_name    = 'dikw'
-    app_version = '1.0'
-    service_email = 'analytic-service@analytic-173907.iam.gserviceaccount.com'  # Email of service account
-    key_file    = '593935752050-jqkuklfcc1gu9jjk50fidouoj0tv51o0.apps.googleusercontent.com'                     # File containing your private key
-    key_secret  = 'GrH4PchpUO6ajM88RPbB-WU7'                        # Password to unlock private key
-    # @profileID  = Service.where(author: current_user[:email]).first[:account].to_s
+    # Check user contect before allow to this trigger
+    if session[:user_contact].nil?
+      redirect_to home_index_path
+    end
 
-    # authentication
-    # key = Google::Apis::KeyUtils.load_from_pkcs12(key_file, key_secret)
-    # @client = Google::Apis.new(
-    #   :application_name => 'Analytic' ,
-    #   :application_version => 'analytic-173907'
-    #   )
-    # @client.authorization = Signet::OAuth2::Client.new(
-    #   :token_credential_uri => 'https://accounts.google.com/o/oauth2/token',
-    #   :audience => 'https://accounts.google.com/o/oauth2/token',
-    #   :scope => 'https://www.googleapis.com/auth/analytics.readonly',
-    #   :issuer => service_email,
-    #   :signing_key => key)
-    # @client.authorization.fetch_access_token!
+    # Auth and Setup tracker
+    access   = Tracker.where(user_id: "#{current_user.id}" ).first
+    reporter = Google::Apis::AnalyticsreportingV4::AnalyticsReportingService.new
+    reporter.authorization = credentials_for(Google::Apis::AnalyticsreportingV4::AUTH_ANALYTICS)
 
-    # Analytic tracking
-    # @analytics = @client.discovered_api('analytics', api_version)
+    # Prepare variable
+    page_id    = access[:code]
+    date_range = if params[:range].present? then params[:range].to_i else 30 end
+    get_exp    = if params[:express].present? then params[:express].to_s else 'pagePath' end
 
+    # Get data
+    expression = "ga:#{get_exp}==/"
+    @total_viewer = reporter.batch_get_reports(reports( page_id, date_range, expression ))
+
+    # Update accessible counter
+    update_access(access)
+  end
+
+  def update_access(track)
+    if track[:count_of_access].present?
+      track[:count_of_access] += 1
+    else
+      track[:count_of_access] = 1
+    end
+    track.save
+  end
+
+  def reports(page_id, range_date, expressionist)
+    # Build report request
+    get_report          = GetReportsRequest.new
+    requests            = ReportRequest.new
+    requests.view_id    = page_id
+
+    # metric expression
+    metric              = Metric.new
+    metric.expression   = "ga:sessions"
+    requests.metrics    = [metric]
+
+    # date range
+    range               = DateRange.new
+    range.start_date    = "#{range_date}daysAgo"
+    range.end_date      = "today"
+    requests.date_ranges  = [range]
+
+    # filters expression
+    requests.filters_expression = expressionist
+    # Send request
+    get_report.report_requests  = [requests]
+    return get_report
+  end
+
+  def auth_storing
+    if session[:user_contact].nil? || params[:id] != (session[:user_contact]['user_token'] rescue '')
+      puts 'authenting >>>'
+      audience  = session[:setting][:client_id].id
+      token     = params[:id]
+      validator = GoogleIDToken::Validator.new
+      begin
+        claim = validator.check(token, audience, audience)
+        user_info = {
+          user_id:    claim['sub'],
+          user_email: claim['email'],
+          first_name: claim['given_name'],
+          last_name:  claim['family_name'],
+          image:      claim['picture'],
+          user_token: params[:id][0..20]
+        }
+        session[:user_contact] = user_info
+      rescue GoogleIDToken::ValidationError => e
+        puts "error on something >>>"
+      end
+    else
+      puts 'ready contact >>>'
+    end
+    render json: session[:user_contact][:image] # user_info[:image]
+  end
+
+  def callback
+    puts "request api >>>"
+    target_url = Google::Auth::WebUserAuthorizer.handle_auth_callback_deferred(request)
+    redirect target_url
   end
 
   def query_ga (dimension, metric, sort , start_date , end_date)
-  query_data = @client.execute(:api_method => @analytics.data.ga.get, :parameters => {
-    'ids' => "ga:" + @profileID,
-    'start-date' => start_date,
-    'end-date' => end_date,
-    'dimensions' => dimension,
-    'metrics' => metric,
-    'sort' => sort
-  })
-  return query_data
-end
+    query_data = @client.execute(:api_method => @analytics.data.ga.get, :parameters => {
+      'ids' => "ga:" + @profileID,
+      'start-date' => start_date,
+      'end-date' => end_date,
+      'dimensions' => dimension,
+      'metrics' => metric,
+      'sort' => sort
+    })
+    return query_data
+  end
+
+  def credentials_for(scope)
+    redis_token_store = Google::Auth::Stores::RedisTokenStore.new(redis: Redis.new)
+    authorizer  = Google::Auth::WebUserAuthorizer.new(session[:setting][:client_id] , scope, redis_token_store)
+    user_id     = session[:user_contact]['user_id']
+    puts request
+    credentials = authorizer.get_credentials(user_id, request)
+    if credentials.nil?
+      redirect_to authorizer.get_authorization_url(login_hint: user_id, request: request)
+    end
+    credentials
+  end
 end
