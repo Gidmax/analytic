@@ -10,10 +10,10 @@
 
 <br>
 
-<%= form_tag( home_test_path , method: "get") do %>
+<%= form_tag( test_path , method: "get") do %>
   <!-- get date range -->
   <%= label_tag(:range, "Date range:") %>
-  <%= number_field_tag(:range) %> days <br>
+  <%= text_field_tag(:range) %> days <br>
 
   <!-- expression added -->
   <%= label_tag(:express, "Expression:") %>

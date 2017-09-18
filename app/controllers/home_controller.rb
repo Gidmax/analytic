@@ -36,10 +36,12 @@ class HomeController < ApplicationController
 
     # Prepare variable
     page_id    = access[:code]
-    date_range = if params[:range].present? then params[:range].to_i else 30 end
     get_exp    = if params[:express].present? then params[:express].to_s else 'pagePath' end
-
-    # range_set  = [30,60,90]
+    if params[:range].present?
+      date_range = params[:range].split(",")
+    else
+      date_range = [30,7]
+    end
 
     # Get data
     expression = "ga:#{get_exp}==/"
@@ -69,23 +71,25 @@ class HomeController < ApplicationController
     # Prepare blank request box
     get_report.report_requests = []
 
+    puts "rdate init >>>"
     range_date.each do |rdate|
+      puts rdate
       # metric expression
       metric              = Metric.new
       metric.expression   = "ga:sessions"
       requests.metrics    = [metric]
 
-      # date range
-      range               = DateRange.new
-      range.start_date    = "#{rdate}daysAgo"
-      range.end_date      = "today"
-      requests.date_ranges  = [range]
-
       # filters expression
       requests.filters_expression = expressionist
 
+      # date range
+      range               = DateRange.new
+      range.start_date    = "#{rdate.to_s}daysAgo"
+      range.end_date      = "today"
+      requests.date_ranges  = [range]
+
       # Send request
-      get_report.report_requests << requests # = [requests]
+      get_report.report_requests << requests
     end
     return get_report
   end

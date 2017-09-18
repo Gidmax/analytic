@@ -5,7 +5,8 @@ Rails.application.routes.draw do
   resources :postcards
 
   # home page
-  get 'home/test'
+  # get 'home/test'
+  get "test", to: "home#test"
   get 'home/index'
   get 'home/auth_storing'
   get "mod/:title", to: "home#mod"
