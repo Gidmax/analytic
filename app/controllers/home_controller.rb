@@ -39,9 +39,12 @@ class HomeController < ApplicationController
     date_range = if params[:range].present? then params[:range].to_i else 30 end
     get_exp    = if params[:express].present? then params[:express].to_s else 'pagePath' end
 
+    # range_set  = [30,60,90]
+
     # Get data
     expression = "ga:#{get_exp}==/"
-    @total_viewer = reporter.batch_get_reports(reports( page_id, date_range, expression ))
+    @v_30_viewer = reporter.batch_get_reports(reports( page_id, date_range, expression ))
+    # @total_viewer = reporter.batch_get_reports(reports( page_id, date_range, expression ))
 
     # Update accessible counter
     update_access(access)
@@ -57,26 +60,33 @@ class HomeController < ApplicationController
   end
 
   def reports(page_id, range_date, expressionist)
+
     # Build report request
     get_report          = GetReportsRequest.new
     requests            = ReportRequest.new
     requests.view_id    = page_id
 
-    # metric expression
-    metric              = Metric.new
-    metric.expression   = "ga:sessions"
-    requests.metrics    = [metric]
+    # Prepare blank request box
+    get_report.report_requests = []
 
-    # date range
-    range               = DateRange.new
-    range.start_date    = "#{range_date}daysAgo"
-    range.end_date      = "today"
-    requests.date_ranges  = [range]
+    range_date.each do |rdate|
+      # metric expression
+      metric              = Metric.new
+      metric.expression   = "ga:sessions"
+      requests.metrics    = [metric]
 
-    # filters expression
-    requests.filters_expression = expressionist
-    # Send request
-    get_report.report_requests  = [requests]
+      # date range
+      range               = DateRange.new
+      range.start_date    = "#{rdate}daysAgo"
+      range.end_date      = "today"
+      requests.date_ranges  = [range]
+
+      # filters expression
+      requests.filters_expression = expressionist
+
+      # Send request
+      get_report.report_requests << requests # = [requests]
+    end
     return get_report
   end
 
