@@ -6,7 +6,7 @@ class HomeController < ApplicationController
   require 'google/apis/analyticsreporting_v4'
   require 'google-id-token'
   require 'dotenv'
-  require 'sinatra'
+  # require 'sinatra'
   include Google::Apis::AnalyticsreportingV4
   include Google::Auth
 
@@ -36,17 +36,15 @@ class HomeController < ApplicationController
 
     # Prepare variable
     page_id    = access[:code]
-    get_exp    = if params[:express].present? then params[:express].to_s else 'pagePath' end
-    if params[:range].present?
-      date_range = params[:range].split(",")
-    else
-      date_range = [30,7]
-    end
+
+    # insert request
+    dimensions = ["ga:dayOfWeekName"]
+    metrics    = unless params[:express].present? then ["ga:users","ga:pageviews","ga:pageviews/ga:users"] else params[:express].split(",") end
+    date_range = unless params[:range].present?   then [90] else params[:range].split(",")   end
+    sort       = unless params[:sort].present?   then ["ga:users"] else params[:sort].split(",")   end
 
     # Get data
-    expression = "ga:#{get_exp}==/"
-    @v_30_viewer = reporter.batch_get_reports(reports( page_id, date_range, expression ))
-    # @total_viewer = reporter.batch_get_reports(reports( page_id, date_range, expression ))
+    @result = reporter.batch_get_reports(reports( page_id, date_range, metrics, dimensions, sort ))
 
     # Update accessible counter
     update_access(access)
@@ -61,36 +59,55 @@ class HomeController < ApplicationController
     track.save
   end
 
-  def reports(page_id, range_date, expressionist)
+  def reports(page_id, range_date, metrics, dimensions, sorts)
 
     # Build report request
     get_report          = GetReportsRequest.new
     requests            = ReportRequest.new
-    requests.view_id    = page_id
+    requests.view_id    = page_id #"134960289"
 
     # Prepare blank request box
     get_report.report_requests = []
 
-    puts "rdate init >>>"
-    range_date.each do |rdate|
-      puts rdate
-      # metric expression
-      metric              = Metric.new
-      metric.expression   = "ga:sessions"
-      requests.metrics    = [metric]
-
-      # filters expression
-      requests.filters_expression = expressionist
-
-      # date range
-      range               = DateRange.new
-      range.start_date    = "#{rdate.to_s}daysAgo"
-      range.end_date      = "today"
-      requests.date_ranges  = [range]
-
-      # Send request
-      get_report.report_requests << requests
+    # dimension expression
+    requests.dimensions    = []
+    dimensions.each_with_index do |exp,idx|
+      dimension            = Dimension.new
+      dimension.name       = exp
+      requests.dimensions  << dimension
     end
+
+    # metric expression
+    requests.metrics    = []
+    metrics.each_with_index do |exp,idx|
+      metric            = Metric.new
+      metric.expression = exp
+      requests.metrics  << metric
+    end
+
+    # sort expression
+    requests.order_bys = []
+    sorts.each_with_index do |exp,idx|
+      sort              = OrderBy.new
+      sort.field_name   = exp
+      sort.sort_order   = "DESCENDING"
+      requests.order_bys << sort
+    end
+
+    # filters expression
+    # requests.filters_expression = expressionist
+
+    # date range
+    requests.date_ranges = []
+    range_date.each_with_index do |rdate,idx|
+      range             = DateRange.new
+      range.start_date  = "#{rdate}daysAgo"
+      range.end_date    = "today"
+      requests.date_ranges << range
+    end
+
+    # Send request
+    get_report.report_requests << requests # = [requests]
     return get_report
   end
 
