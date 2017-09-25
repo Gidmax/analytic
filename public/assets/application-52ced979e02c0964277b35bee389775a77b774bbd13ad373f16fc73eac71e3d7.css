@@ -1,0 +1,80 @@
+/* line 1, /Users/Chin/project/analytic/app/assets/stylesheets/root.scss */
+.th-font {
+  font-family: 'Chatthai' !important;
+  font-weight: 400 !important;
+}
+/* line 4, /Users/Chin/project/analytic/app/assets/stylesheets/root.scss */
+.th-font.small-sz {
+  font-size: 16px;
+  line-height: 20px;
+}
+/* line 7, /Users/Chin/project/analytic/app/assets/stylesheets/root.scss */
+.th-font.mini-medium-sz {
+  font-size: 20px;
+  line-height: 22px;
+}
+/* line 10, /Users/Chin/project/analytic/app/assets/stylesheets/root.scss */
+.th-font.medium-sz {
+  font-size: 21px;
+  line-height: 23px;
+  letter-spacing: 0.3px;
+}
+/* line 13, /Users/Chin/project/analytic/app/assets/stylesheets/root.scss */
+.th-font.upper-sz {
+  font-size: 24px;
+  line-height: 29px;
+}
+/* line 16, /Users/Chin/project/analytic/app/assets/stylesheets/root.scss */
+.th-font.upper-top-sz {
+  font-size: 28px;
+  line-height: 32px;
+}
+/* line 20, /Users/Chin/project/analytic/app/assets/stylesheets/root.scss */
+.th-font.big-sz {
+  font-size: 36px;
+}
+/* line 21, /Users/Chin/project/analytic/app/assets/stylesheets/root.scss */
+.th-font.extra-sz {
+  font-size: 53px;
+  line-height: 51px;
+}
+/* line 22, /Users/Chin/project/analytic/app/assets/stylesheets/root.scss */
+.th-font.super-extra-sz {
+  font-size: 72px;
+}
+
+/* line 27, /Users/Chin/project/analytic/app/assets/stylesheets/root.scss */
+.button-tab {
+  padding: 8px 16px;
+  color: white;
+  font-weight: 400;
+  border-radius: 3px;
+}
+/* line 32, /Users/Chin/project/analytic/app/assets/stylesheets/root.scss */
+.button-tab.button-primary {
+  background: #3367d6;
+}
+
+@media (min-width: 640px) {
+  /* line 35, /Users/Chin/project/analytic/app/assets/stylesheets/root.scss */
+  .min-height-280 {
+    min-height: 280px;
+  }
+}
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+
+
+ */
+
+ 
