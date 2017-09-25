@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   # landing page
   get 'landing/index'
   get "about", to: "landing#about"
-  get "our-project", to: "landing#our_project"
+  get "story", to: "landing#story"
   get "oauth2callback", to: "landing#callback"
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

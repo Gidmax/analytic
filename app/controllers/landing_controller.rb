@@ -7,6 +7,7 @@ class LandingController < ApplicationController
   def about
   end
 
-  def our_project
+  def story
   end
+
 end
