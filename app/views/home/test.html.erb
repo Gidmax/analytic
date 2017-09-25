@@ -1,6 +1,11 @@
 <h2>Result is ...</h2>
+
 <div class="">
-  <%= @result.to_json rescue 'not found' %> <br>
+  <div class="">report</div>
+  <%= @peg[0][:report].to_json %>
+  <br><br>
+  <div class="">total</div>
+  <%= @peg[0][:totals].to_json %><br>
 </div>
 
 <br>

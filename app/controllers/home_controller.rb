@@ -35,19 +35,137 @@ class HomeController < ApplicationController
     reporter.authorization = credentials_for(Google::Apis::AnalyticsreportingV4::AUTH_ANALYTICS)
 
     # Prepare variable
-    page_id    = access[:code]
+    page_id    = "134960289"  # access[:code]
+
+    # sample instance
+    instance = [
+      {
+        dimension:  ["ga:country","ga:hour","ga:dayOfWeekName","ga:userAgeBracket"] ,
+        metric:     ["ga:users","ga:sessions","ga:pageviews"],
+        date_range: [30,60],
+        sort:       ["ga:users"],
+        sampling:   "LARGE" ,
+        max:        10000
+      },
+      {
+        dimension:  ["ga:hour","ga:dayOfWeekName","ga:userAgeBracket"] ,
+        metric:     ["ga:users","ga:pageviews"],
+      },
+      {
+        dimension:  ["ga:userType","ga:userGender"] ,
+        metric:     ["ga:users","ga:sessions"],
+        date_range: [30,60],
+        filter:      "ga:deviceCategory==mobile" ,
+        segments:    "users::condition::ga:userGender==female"
+      },
+    ]
 
     # insert request
-    dimensions = ["ga:dayOfWeekName"]
-    metrics    = unless params[:express].present? then ["ga:users","ga:pageviews","ga:pageviews/ga:users"] else params[:express].split(",") end
-    date_range = unless params[:range].present?   then [90] else params[:range].split(",")   end
-    sort       = unless params[:sort].present?   then ["ga:users"] else params[:sort].split(",")   end
+    dimensions = instance[0][:dimension]
+    metrics    = unless params[:express].present? then instance[0][:metric] else params[:express].split(",") end
+    date_range = unless params[:range].present?   then instance[0][:date_range] else params[:range].split(",")   end
+    sort       = unless params[:sort].present?    then instance[0][:sort] else params[:sort].split(",")   end
+    sampling_level = unless params[:sampling].present? then instance[0][:sampling] else params[:sort].split(",")   end
+    max        = unless params[:max].present? then instance[0][:max] else params[:sort].split(",")   end
+    filter     = unless params[:filter].present? then instance[2][:filter] else params[:sort].split(",")   end
+    segments   = unless params[:segments].present? then instance[2][:segments] else params[:sort].split(",")   end
 
     # Get data
-    @result = reporter.batch_get_reports(reports( page_id, date_range, metrics, dimensions, sort ))
+    batch    = reporter.batch_get_reports(reports( page_id, date_range, metrics, dimensions, sort, sampling_level, max, filter, segments  ))
+    @peg     = object_parser(batch, date_range)
+    @result  = batch
+    puts "read file >>>"
+    puts @result
+    puts
 
     # Update accessible counter
     update_access(access)
+  end
+
+  def loot(dat,index)
+    result = {}
+    index.each_with_index do |desc,idx|
+      result[desc] = dat[idx].to_i
+    end
+    return result
+  end
+
+  def simpler(text)
+    p1 = text.to_s.delete "ga:"
+    p2 = p1.underscore
+    return p2
+  end
+
+  def format_fix(range)
+    return "range_#{range}_day"
+  end
+
+  def object_parser(input, date_range)
+    result    = []
+    predicate = input.to_h[:reports]
+    predicate.each do |pred|
+      data      = pred[:data]
+      metrics   = []
+      dimension = []
+      range_set = []
+      metric_blob = {}
+
+      # setup parser block
+      parser  = {
+        report: {
+          dimension: {},
+          metric:    {}
+        },
+        totals: {}
+      }
+
+      # get metric header
+      pred[:column_header][:metric_header][:metric_header_entries].each do |mt|
+        metrics << simpler(mt[:name])
+        metric_blob[simpler(mt[:name])] = []
+      end
+
+      # get dimension header
+      pred[:column_header][:dimensions].each do |dm|
+        dimension << simpler(dm)
+        parser[:report][:dimension][simpler(dm)] = []
+      end
+
+      # get daterange metric spiltter
+      date_range.each do |range|
+        range_set << format_fix(range)
+        parser[:report][:metric][format_fix(range)] = metric_blob
+      end
+
+      # total table
+      data[:totals].each_with_index do |total,idx|
+        parser[:totals][dimension[idx]] = {
+          total: loot(total[:values], metrics) ,
+          max:   loot(data[:maximums][idx][:values], metrics) ,
+          min:   loot(data[:minimums][idx][:values], metrics)
+        }
+      end
+      #### report everything in this table ###
+      data[:rows].each_with_index do |r,idx|
+        # dimension report parsable
+        r[:dimensions].each_with_index do |dim,dix|
+          parser[:report][:dimension][dimension[dix]] << dim
+        end
+        # metrics report parsable
+        # select metric by range set
+        range_set.each_with_index do |rs,range_index|
+          inspector = parser[:report][:metric][rs]
+          r[:metrics][range_index][:values].each_with_index do |value,met_index|
+            inspector[metrics[met_index]] << value
+          end
+        end
+      end
+
+      result << parser
+    end
+
+    return result
+
   end
 
   def update_access(track)
@@ -59,7 +177,7 @@ class HomeController < ApplicationController
     track.save
   end
 
-  def reports(page_id, range_date, metrics, dimensions, sorts)
+  def reports(page_id, range_date, metrics, dimensions, sorts, sampling_level, max, filter, segments)
 
     # Build report request
     get_report          = GetReportsRequest.new
@@ -94,8 +212,14 @@ class HomeController < ApplicationController
       requests.order_bys << sort
     end
 
+    # sampling level
+    requests.sampling_level = sampling_level
+
+    # max results
+    requests.page_size = max
+
     # filters expression
-    # requests.filters_expression = expressionist
+    requests.filters_expression = filter
 
     # date range
     requests.date_ranges = []

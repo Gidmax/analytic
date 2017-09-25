@@ -20,7 +20,7 @@ Table of Contents:
 /* ----------------------------------------------------------------------------- */
 /* --- 1. SETUP
 /* ----------------------------------------------------------------------------- */
-body { position: relative; color: #434343; font-size: 13px; font-family: "Chatthai","Open Sans", Helvetica, Arial, sans-serif; font-weight: 400; line-height: 1.5; overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body { position: relative; color: #434343; font-size: 13px; font-family: "Open Sans", Helvetica, Arial, sans-serif; font-weight: 400; line-height: 1.5; overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
 a { color: inherit; -moz-transition: all 0.2s ease-in-out; -o-transition: all 0.2s ease-in-out; -webkit-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out; }
 

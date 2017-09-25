@@ -1,0 +1,39 @@
+.th-font{
+  font-family: 'Chatthai' !important;
+  font-weight: 400 !important;
+  &.small-sz{
+    font-size: 16px; line-height: 20px;
+  }
+  &.mini-medium-sz{
+    font-size: 20px; line-height: 22px;
+  }
+  &.medium-sz{
+    font-size: 21px ; line-height: 23px; letter-spacing: 0.3px;
+  }
+  &.upper-sz{
+    font-size: 24px; line-height: 29px;
+  }
+  &.upper-top-sz{
+    font-size: 28px; line-height: 32px;
+  }
+  //text size
+  &.big-sz{     font-size: 36px ; }
+  &.extra-sz{ font-size: 53px; line-height: 51px; }
+  &.super-extra-sz{ font-size: 72px ; }
+
+
+}
+
+.button-tab{
+  padding: 8px 16px;
+  color: white;
+  font-weight: 400;
+  border-radius: 3px;
+  &.button-primary{ background: #3367d6; }
+}
+
+.min-height-280{
+  @media (min-width: 640px){
+    min-height: 280px;
+  }
+}
