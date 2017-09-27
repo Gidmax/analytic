@@ -1,24 +1,70 @@
-<h2>Result is ...</h2>
-
-<div class="">
-  <div class="">report</div>
-  <%= @peg[0][:report].to_json %>
+<div class="container" style="margin: 0 40px;">
   <br><br>
-  <div class="">total</div>
-  <%= @peg[0][:totals].to_json %><br>
+  <!-- <h2>Result is ...</h2> -->
+  <div class="">
+    <div class="">KOHLIFE - reporter</div>
+    <!-- <% @result[0][:report][:dimension] %> -->
+  </div>
+
+  <h2>Accessible Chart</h2>
+  <div class="" style="">
+    <canvas id="myChart"></canvas>
+  </div>
+  <div class="" style="">
+    <canvas id="myChartPie" style="max-width:30%;padding:30px;"></canvas>
+  </div>
+
+  <script type="text/javascript">
+  var ctpie = document.getElementById("myChartPie").getContext('2d');
+  var myDoughnutChart = new Chart(ctpie, {
+    type: 'pie',
+    data: {
+      labels: <%= @pie[:label] %>,
+      datasets: [{
+        data:            <%= @pie[:data] %> ,
+        backgroundColor: <%= @pie[:swatch] %>
+      }],
+    },
+  });
+  </script>
+
+  <script>
+  var ctx = document.getElementById("myChart").getContext('2d');
+  var myChart = new Chart(ctx, {
+      type: "<%= @bar[:type] %>",
+      data: {
+          labels:    <%= @bar[:label_x] %> ,
+          datasets: [{
+              label: "<%= @bar[:name] %>",
+              data:  <%= @bar[:data] %>,
+              borderWidth: 1 ,
+              backgroundColor:  <%= @bar[:color] %>
+          }]
+      },
+      options: {
+          scales: {
+              yAxes: [{
+                  ticks: {
+                      beginAtZero:true
+                  }
+              }]
+          }
+      }
+  });
+  </script>
+  <br>
+
+  <%= form_tag( test_path , method: "get") do %>
+    <!-- get date range -->
+    <%= label_tag(:range, "Date range:") %>
+    <%= text_field_tag(:range) %> days <br>
+
+    <!-- expression added -->
+    <%= label_tag(:express, "Expression:") %>
+    <%= text_field_tag(:express) %> <br>
+
+    <!-- submit button -->
+    <%= submit_tag("Search") %>
+  <% end %>
+
 </div>
-
-<br>
-
-<%= form_tag( test_path , method: "get") do %>
-  <!-- get date range -->
-  <%= label_tag(:range, "Date range:") %>
-  <%= text_field_tag(:range) %> days <br>
-
-  <!-- expression added -->
-  <%= label_tag(:express, "Expression:") %>
-  <%= text_field_tag(:express) %> <br>
-
-  <!-- submit button -->
-  <%= submit_tag("Search") %>
-<% end %>

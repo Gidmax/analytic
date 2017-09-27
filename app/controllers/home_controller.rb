@@ -35,15 +35,15 @@ class HomeController < ApplicationController
     reporter.authorization = credentials_for(Google::Apis::AnalyticsreportingV4::AUTH_ANALYTICS)
 
     # Prepare variable
-    page_id    = "134960289"  # access[:code]
+    page_id    = access[:code]
 
-    # sample instance
+    # Sample instance
     instance = [
       {
-        dimension:  ["ga:country","ga:hour","ga:dayOfWeekName","ga:userAgeBracket"] ,
-        metric:     ["ga:users","ga:sessions","ga:pageviews"],
-        date_range: [30,60],
-        sort:       ["ga:users"],
+        dimension:  ["ga:hour","ga:dayOfWeekName"] ,
+        metric:     ["ga:sessions"],
+        date_range: [60],
+        sort:       ["ga:sessions"],
         sampling:   "LARGE" ,
         max:        10000
       },
@@ -54,13 +54,13 @@ class HomeController < ApplicationController
       {
         dimension:  ["ga:userType","ga:userGender"] ,
         metric:     ["ga:users","ga:sessions"],
-        date_range: [30,60],
-        filter:      "ga:deviceCategory==mobile" ,
-        segments:    "users::condition::ga:userGender==female"
+        date_range: [60],
+        filter:      "" ,
+        segments:    ""
       },
     ]
 
-    # insert request
+    # Insert request
     dimensions = instance[0][:dimension]
     metrics    = unless params[:express].present? then instance[0][:metric] else params[:express].split(",") end
     date_range = unless params[:range].present?   then instance[0][:date_range] else params[:range].split(",")   end
@@ -72,14 +72,76 @@ class HomeController < ApplicationController
 
     # Get data
     batch    = reporter.batch_get_reports(reports( page_id, date_range, metrics, dimensions, sort, sampling_level, max, filter, segments  ))
-    @peg     = object_parser(batch, date_range)
-    @result  = batch
-    puts "read file >>>"
-    puts @result
-    puts
+    @result  = object_parser(batch, date_range)
+
+    # Parser bar chart
+    @bar = parse_chart(
+            'bar',
+            @result[0],
+            'count of sessions',
+            ['dy_of_week_nme','hour'],
+            'sessions',
+            date_range,
+            ['#4c7ff0','#001f2c']
+          )
+
+    # Parsing data
+    hour_t = @result[0][:totals]['hour']
+    data_h = [ hour_t[:total]['sessions'], hour_t[:max]['sessions'], hour_t[:min]['sessions']]
+    @pie = {
+      data:    html_wrap(data_h),
+      label:   html_wrap(['total', 'max', 'min']),
+      swatch:  html_wrap(swatcher(3))
+    }
 
     # Update accessible counter
     update_access(access)
+  end
+
+  def parse_chart(type,object,title,dim,metric,range,color)
+    dimension  = object[:report][:dimension]
+    metrics    = object[:report][:metric]
+    data       = metrics["range_#{range[0]}_day"][metric]
+    iterator   = dimension[:count]
+    concat   = []
+    gradients  = []
+    iterator.times do |idx|
+      # collect label_x
+      stuff = ""
+      dim.each_with_index do |d,im|
+        suffix = if d == "hour" then ":00" else "" end
+        stuff  += unless im == 0 then " - " else "" end + dimension[d][idx] + suffix
+      end
+      concat   << stuff
+      # render bar color
+      index     = (idx + 1)/(iterator.to_f)
+      gradients << hex(Gradients.new(color[0],color[1]).at(index))
+    end
+    return {
+      type:     type,
+      name:     title,
+      label_x:  html_wrap(concat),
+      color:    html_wrap(gradients),
+      data:     html_wrap(data)
+    }
+  end
+
+  def hex(int)
+    return int.to_s(:whex)
+  end
+
+  def html_wrap(obj)
+    return obj.to_json.html_safe
+  end
+
+  def swatcher(time)
+    swatch = []
+    time.times do |t|
+      index = (t+1)/time.to_f
+      swatch << Gradients.new('#345e6a', '#f2369e').at(index).to_s(:whex)
+      # swatch << "#" + ("%06x" % (rand * 0xffffff))
+    end
+    return swatch
   end
 
   def loot(dat,index)
@@ -113,7 +175,9 @@ class HomeController < ApplicationController
       # setup parser block
       parser  = {
         report: {
-          dimension: {},
+          dimension: {
+            count: 0
+          },
           metric:    {}
         },
         totals: {}
@@ -139,27 +203,35 @@ class HomeController < ApplicationController
 
       # total table
       data[:totals].each_with_index do |total,idx|
+
+        puts "get total >>>"
+        puts total
+
         parser[:totals][dimension[idx]] = {
           total: loot(total[:values], metrics) ,
-          max:   loot(data[:maximums][idx][:values], metrics) ,
-          min:   loot(data[:minimums][idx][:values], metrics)
+          max:   loot((data[:maximums][idx][:values] rescue 0), metrics) ,
+          min:   loot((data[:minimums][idx][:values] rescue 0), metrics)
         }
       end
       #### report everything in this table ###
-      data[:rows].each_with_index do |r,idx|
-        # dimension report parsable
-        r[:dimensions].each_with_index do |dim,dix|
-          parser[:report][:dimension][dimension[dix]] << dim
-        end
-        # metrics report parsable
-        # select metric by range set
-        range_set.each_with_index do |rs,range_index|
-          inspector = parser[:report][:metric][rs]
-          r[:metrics][range_index][:values].each_with_index do |value,met_index|
-            inspector[metrics[met_index]] << value
+      unless data[:rows].nil?
+        data[:rows].each_with_index do |r,idx|
+          parser[:report][:dimension][:count] += 1
+          # dimension report parsable
+          r[:dimensions].each_with_index do |dim,dix|
+            parser[:report][:dimension][dimension[dix]] << dim
+          end
+          # metrics report parsable
+          # select metric by range set
+          range_set.each_with_index do |rs,range_index|
+            inspector = parser[:report][:metric][rs]
+            r[:metrics][range_index][:values].each_with_index do |value,met_index|
+              inspector[metrics[met_index]] << value.to_i
+            end
           end
         end
       end
+
 
       result << parser
     end
